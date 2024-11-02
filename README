@@ -30,3 +30,9 @@ Depends on:
   http://software.frodo.looijaard.name/getopt/
 - qrencode
   https://fukuchi.org/works/qrencode/
+
+============================
+Modification made by SimbaFs
+============================
+
+A new option has been added to the `generate` subcommand, allowing the use of a legacy password generation method. By default, `generate` employs a "semi-hash" technique to create passwords from `pass-name`. This technique extracts the first 25 characters (by default) from the base64 encoding of an AES-256 encryption of `pass-name`, using a key stored in `~/.password-store/.key`. This method enables password regeneration even if pass is inaccessible.
