@@ -542,6 +542,7 @@ cmd_generate() {
 	if [[ $random -eq 1 ]]; then
 		read -r -n $length pass < <(LC_ALL=C tr -dc "$characters" < /dev/urandom)
 	else
+		[[ -f $key ]] || die "Error: $key does not exist."
 		pass=$(echo "$path"a_string_to_encure_output_length | openssl enc -aes-256-cbc -nosalt -pass file:"$key" -pbkdf2 | base64 | cut -c -"$length")
 	fi
 	[[ ${#pass} -eq $length ]] || die "Could not generate password from /dev/urandom."
@@ -665,6 +666,9 @@ cmd_git() {
 
 		echo '*.gpg diff=gpg' > "$PREFIX/.gitattributes"
 		git_add_file .gitattributes "Configure git repository for gpg file diff."
+
+		echo .key >> "$PREFIX/.gitignore"
+		git_add_file .gitignore "Ignore .key files."
 		git -C "$INNER_GIT_DIR" config --local diff.gpg.binary true
 		git -C "$INNER_GIT_DIR" config --local diff.gpg.textconv "$GPG -d ${GPG_OPTS[*]}"
 	elif [[ -n $INNER_GIT_DIR ]]; then
